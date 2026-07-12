@@ -4,6 +4,7 @@ members = [
     "crates/turbo-core",
     "crates/turbo-bytes",
     "crates/turbo-string",
+    "crates/turbo-hash",
 ]
 
 [workspace.package]

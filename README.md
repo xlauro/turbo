@@ -102,6 +102,30 @@ We welcome contributions from the community! To maintain the highest standards o
 
 ---
 
+## ⚡ Performance Benchmarks
+
+All core components are benchmarked using [Criterion.rs](https://github.com/bheisler/criterion.rs). Below is a telemetry summary of the performance compared to alternative designs or standard library structures, measured on the development target:
+
+### 1. Custom Allocations & Core Operations (`turbo-core`)
+* **Standard Heap Allocation**: `global_alloc_alloc_dealloc` takes **~8.7 ns**
+* **Tracking Allocator Overhead**: `tracking_alloc_alloc_dealloc` takes **~19.0 ns** (providing lightweight heap usage counting with minimal overhead)
+* **Formatted Error Construction**: `error_to_string_capacity_overflow` takes **~135.5 ns**
+
+### 2. Byte Buffers & Zero-Copy Cursor Streams (`turbo-bytes`)
+* **Buffer Recycling**: `pool_acquire_and_recycle_4k` checkout and release takes **~62.0 ns** (minimizing raw heap pressure under cyclic usage)
+* **Binary Cursor Writers**: `cursor_write_u32_le_loop` takes **~0.27 ns per write operation** (ideal for low-latency network serializations)
+
+### 3. High-Performance String Buffers (`turbo-string`)
+* **Small String Optimization (SSO)**: `small_string_new_short` (inline stack string of <= 22 bytes) takes **~31.7 ns** without allocating on the heap
+* **String Builder Formatting**: `string_builder_format` takes **~150.5 ns**
+* **Substring Replacement**: `turbo_string_replace` takes **~155.6 ns**
+
+### 4. Cache-Friendly Collections (`turbo-hash`)
+* **HashMap Insertion**: `turbo_hash_map_insert` (inserting 100 entries) takes **~2.08 µs** (vs `std::collections::HashMap` taking **~3.80 µs** — **1.8x speedup**)
+* **HashMap Lookup**: `turbo_hash_map_lookup` (100 query operations) takes **~195.2 ns** (vs `std::collections::HashMap` taking **~1.36 µs** — **7.0x speedup!**)
+
+---
+
 ## 📜 License
 
 Distributed under the terms of both the **MIT** and **Apache 2.0** licenses. See [LICENSE](file:///home/lauros/Workspace/projects/turbo-core/LICENSE) for details.

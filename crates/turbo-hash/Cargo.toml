@@ -1,0 +1,23 @@
+[package]
+name = "turbo-hash"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-performance collections using Robin Hood hashing and fast custom hashers"
+
+[features]
+default = ["std"]
+std = ["turbo-core/std"]
+alloc = ["turbo-core/alloc"]
+
+[dependencies]
+turbo-core = { path = "../turbo-core", default-features = false }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "hash_bench"
+harness = false

@@ -1,12 +1,12 @@
-use turbo_string::{SmallString, StringView, StringBuilder, join, replace, trim, normalize};
 use core::fmt::Write;
+use turbo_string::{join, normalize, replace, trim, SmallString, StringBuilder, StringView};
 
 fn main() -> turbo_core::Result<()> {
     // 1. SmallString (SSO) Showcase
     println!("--- 1. SmallString (SSO) ---");
     let mut s1 = SmallString::from_str("hello")?;
     println!("String 1: '{}' (Inline state)", s1);
-    
+
     s1.push_str(" world! This now extends to spill onto the heap.")?;
     println!("String 1 after push: '{}'", s1);
     println!("String 1 len: {}", s1.len());
