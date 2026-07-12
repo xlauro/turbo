@@ -1,0 +1,23 @@
+[package]
+name = "turbo-collections"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-performance generational arenas and dense collections"
+
+[features]
+default = ["std"]
+std = ["turbo-core/std"]
+alloc = ["turbo-core/alloc"]
+
+[dependencies]
+turbo-core = { path = "../turbo-core", default-features = false }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "collections_bench"
+harness = false

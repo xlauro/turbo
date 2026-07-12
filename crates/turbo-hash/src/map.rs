@@ -1,7 +1,7 @@
-use core::hash::{Hash, Hasher, BuildHasher};
-use core::borrow::Borrow;
-use turbo_core::Result;
 use crate::hasher::BuildFxHasher;
+use core::borrow::Borrow;
+use core::hash::{BuildHasher, Hash, Hasher};
+use turbo_core::Result;
 
 #[cfg(any(feature = "std", feature = "alloc"))]
 use crate::alloc_crate::vec::Vec;
@@ -94,7 +94,8 @@ impl<K, V, S: BuildHasher> HashMap<K, V, S> {
     /// Clears the map, removing all key-value pairs.
     pub fn clear(&mut self) {
         self.buckets.clear();
-        self.buckets.resize_with(self.capacity, || Bucket { entry: None });
+        self.buckets
+            .resize_with(self.capacity, || Bucket { entry: None });
         self.len = 0;
     }
 
@@ -331,10 +332,7 @@ impl<K: Eq + Hash, V, S: BuildHasher + Clone> HashMap<K, V, S> {
                         });
                     }
                     if entry.hash == hash && entry.key == key {
-                        return Entry::Occupied(OccupiedEntry {
-                            map: self,
-                            idx,
-                        });
+                        return Entry::Occupied(OccupiedEntry { map: self, idx });
                     }
                     dis += 1;
                     idx = (idx + 1) & (self.capacity - 1);

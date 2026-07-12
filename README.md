@@ -124,6 +124,12 @@ All core components are benchmarked using [Criterion.rs](https://github.com/bhei
 * **HashMap Insertion**: `turbo_hash_map_insert` (inserting 100 entries) takes **~2.08 µs** (vs `std::collections::HashMap` taking **~3.80 µs** — **1.8x speedup**)
 * **HashMap Lookup**: `turbo_hash_map_lookup` (100 query operations) takes **~195.2 ns** (vs `std::collections::HashMap` taking **~1.36 µs** — **7.0x speedup!**)
 
+### 5. Stable Generational Collections (`turbo-collections`)
+* **Index allocation & deletion**: Generational Arena (`arena_insert_remove`) takes **~8.96 ns** (vs `dense_map_insert_remove` taking **~10.86 ns** due to swap-and-pop bookkeeping)
+* **Generational elements lookup**: `arena_lookup` takes **~1.07 µs** (vs `dense_map_lookup` taking **~1.28 µs** for 1000 items)
+* **Contiguous list iteration**: `dense_map_iter` takes **~54.7 ns** (vs sparse slot `arena_iter` taking **~548.3 ns** for 1000 elements — **10x speedup!** due to cache contiguity layout)
+
+
 ---
 
 ## 📜 License
