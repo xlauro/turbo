@@ -1,70 +1,107 @@
-# Turbo Ecossistema
+# Turbo Ecosystem
 
 [![License](https://img.shields.io/badge/license-MIT_OR_Apache--2.0-blue.svg)](#license)
 [![Rust](https://img.shields.io/badge/rust-stable_1.75.0%2B-orange.svg)](#rust-toolchain)
 
-Turbo é uma plataforma de infraestrutura e processamento de dados de alto desempenho para **Rust**, com bindings oficiais de alta fidelidade para **Node.js** (TypeScript) e **Python**. 
+Turbo is a high-performance, open-source infrastructure and data processing platform for **Rust**, featuring high-fidelity official bindings for **Node.js** (TypeScript via `napi-rs`) and **Python** (via `PyO3`).
 
-Concebido como um ecossistema integrado de baixa latência, o Turbo segue a filosofia de *Zero Cost Abstractions*, uso eficiente de CPU/memória (cache locality, SIMD, pools) e segurança de concorrência.
-
----
-
-## ⚡ Princípios Arquiteturais
-
-* **Zero-Cost Abstractions**: Pague apenas pelo que usar. Abstrações limpas que compilam em código altamente otimizado.
-* **Ergonomia e Consistência**: APIs limpas, previsíveis, intuitivas e totalmente consistentes entre as crates.
-* **Error Handling**: APIs públicas nunca entram em pânico. Fortemente tipadas com tratamento de erro sem vazamento de abstração.
-* **Memory Optimization**: Alocação consciente de memória, reutilização de buffers, slabs, pools e arenas para evitar pressões de GC (Bindings) ou alocador global (Rust).
-* **Unsafe Rust**: Altamente documentado, testado e restrito apenas a ganhos de performance comprovados por benchmarks.
+Engineered as a cohesive, low-latency ecosystem, Turbo adheres to the philosophy of *Zero Cost Abstractions*, efficient CPU/memory utilization (cache locality, SIMD, object pooling), and robust concurrency safety.
 
 ---
 
-## 📦 Estrutura do Workspace
+## ⚡ Architectural Principles
 
-O projeto é organizado como um Cargo Workspace único, estruturado da seguinte forma:
+* **Zero-Cost Abstractions**: Pay only for what you use. Abstractions compile down to highly optimized machine code.
+* **Ergonomics & Consistency**: Clean, predictable, and discoverable APIs. The user should feel like they are working with a single unified framework.
+* **Non-Panicking APIs**: Public APIs never panic. Errors are strongly-typed, predictable, and managed using `Result`.
+* **Memory Optimization**: Cache-friendly memory layouts, reuse of byte buffers, arenas, and object pools to minimize allocation pressure and avoid GC latency.
+* **Unsafe Rust**: Allowed only when backed by benchmarks showing measurable gains, thoroughly documented with safety invariants, and covered by strict test suites.
+
+---
+
+## 📦 Workspace Layout
+
+The ecosystem is organized as a single Cargo Workspace to ensure consistent versioning and configuration:
 
 ```
 turbo/
-├── Cargo.toml                # Definição do Workspace
-├── rust-toolchain.toml       # Versão pinhada do Rust (MSRV)
-├── README.md                 # Visão geral
-├── LICENSE                   # Licença MIT / Apache 2.0
-├── CHANGELOG.md              # Registro de alterações
-├── crates/                   # Pacotes Rust internos
-│   ├── turbo-core            # Tipos compartilhados, erros, traits e alloc
-│   ├── turbo-bytes           # ByteBuffer, reader/writer de alta performance
-│   └── ... (outros componentes)
-├── bindings/                 # Bindings oficiais para outras linguagens
-│   ├── node/                 # napi-rs
-│   └── python/               # PyO3
-├── benchmarks/               # Suíte Criterion de performance global
-└── examples/                 # Exemplos de uso executáveis
+├── Cargo.toml                # Workspace definition
+├── rust-toolchain.toml       # Pinned Rust toolchain (MSRV)
+├── README.md                 # Project overview and documentation
+├── LICENSE                   # MIT / Apache 2.0 dual license
+├── CHANGELOG.md              # Keeping track of changes
+├── crates/                   # Rust core libraries
+│   ├── turbo-core            # Shared types, custom allocators, macros, errors
+│   ├── turbo-bytes           # Zero-copy binary buffers and cursor streams
+│   └── ... (other components)
+├── bindings/                 # Official bindings for Node.js and Python
+│   ├── node/                 # TypeScript modules powered by napi-rs
+│   └── python/               # CPython wheels powered by PyO3
+├── benchmarks/               # Criterion benchmark suites
+└── examples/                 # Executable application examples
 ```
 
 ---
 
-## 🚀 Ordem de Implementação das Crates
+## 🚀 Order of Implementation
 
-1. **`turbo-core`** - Tipos compartilhados, erros, traits e utilitários de alocação.
-2. **`turbo-bytes`** - Buffer e fluxos binários.
-3. **`turbo-string`** - Processamento de texto otimizado.
-4. **`turbo-hash`** - Tabelas de hash personalizadas.
-5. **`turbo-collections`** - Coleções especializadas de alta densidade.
-6. **`turbo-pool`** - Alocadores de arena e pools de objetos.
-7. **`turbo-worker`** - Thread pool para roubo de tarefas (work-stealing).
-8. **`turbo-csv`** - Leitor/Gravador CSV de alta velocidade (SIMD).
-9. **`turbo-json`** - Parser e serializador JSON DOM/Streaming.
-10. **`turbo-query`** - Mecanismo de expressão e pipelines de consulta.
-11. **`turbo-data`** - DataFrames e Series.
-12. **`turbo-http`** - Parser HTTP de alto desempenho.
-13. **`turbo-cache`** - Caches thread-safe concorrentes (LRU, LFU, ARC).
-14. **`turbo-log`** - Registro estruturado assíncrono.
-15. **`turbo-metrics`** - Contadores, gauges e histogramas.
-16. **`turbo-cli`** - Parser de argumentos rápido.
-17. **`turbo-config`** - Carregador e validador de configurações.
+1. **`turbo-core`** - Shared core types, errors, results, and allocation traits.
+2. **`turbo-bytes`** - Efficient byte buffer views and cursor readers/writers.
+3. **`turbo-string`** - Highly optimized UTF-8 text processing.
+4. **`turbo-hash`** - SwissTable-based custom high-performance hashing.
+5. **`turbo-collections`** - Arena-backed and stable dense arrays.
+6. **`turbo-pool`** - Slabs, arenas, and object pools.
+7. **`turbo-worker`** - Scoped and priority work-stealing thread pools.
+8. **`turbo-csv`** - Ultra-fast CSV parser with SIMD acceleration.
+9. **`turbo-json`** - JSON parser, DOM, serialization, and patching.
+10. **`turbo-query`** - Query pipeline engine, projection, and aggregations.
+11. **`turbo-data`** - DataFrames and Series.
+12. **`turbo-http`** - High-speed HTTP parser.
+13. **`turbo-cache`** - Thread-safe LRU, LFU, ARC cache implementations.
+14. **`turbo-log`** - Async structured logging.
+15. **`turbo-metrics`** - High-resolution telemetry (gauges, counters, histograms).
+16. **`turbo-cli`** - Fast command-line parser.
+17. **`turbo-config`** - Flexible TOML/YAML config loading.
 
 ---
 
-## 📜 Licença
+## 🤝 Contributing
 
-Distribuído sob os termos da licença **MIT** e **Apache 2.0**. Consulte o arquivo [LICENSE](file:///home/lauros/Workspace/projects/turbo-core/LICENSE) para obter detalhes.
+We welcome contributions from the community! To maintain the highest standards of code quality, performance, and API design, we ask that all contributors follow these guidelines.
+
+### Development Workflow
+
+1. **Fork & Branch**: Fork the repository and create your feature branch:
+   ```bash
+   git checkout -b feat/your-awesome-feature
+   ```
+2. **Implement Incrementally**: Keep pull requests focused. Avoid generating thousands of lines of changes at once.
+3. **Write Tests**: Ensure your code is thoroughly covered by unit and integration tests.
+4. **Benchmark**: If changing performance-sensitive code, add Criterion benchmarks comparing your changes against baseline implementations.
+5. **Format & Lint**: Ensure your code compiles cleanly without any warnings:
+   ```bash
+   cargo fmt --all
+   cargo clippy --workspace --all-targets -- -D warnings
+   ```
+6. **Commit**: Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for git messages:
+   - `feat(core): ...`
+   - `fix(bytes): ...`
+   - `perf(hash): ...`
+   - `docs(string): ...`
+
+### Code Quality Checklist
+
+* **No Warnings**: Code must compile with zero warnings (`-D warnings` is enforced in CI).
+* **No Unused Code/TODOs**: Remove dead code and do not leave dangling `TODO` comments.
+* **Documentation**: All public APIs must have description, safety invariants (if unsafe), performance notes, and a compilable code example.
+* **Unsafe Code Guidelines**: If you write `unsafe`, you must:
+  * Provide a benchmark justifying the performance gain.
+  * Add a comment block explaining the safety invariants (`// SAFETY:`).
+  * Write extensive property-based or integration tests verifying bounds.
+* **MSRV Guard**: Keep code compatible with the ecosystem Minimum Supported Rust Version (`1.75.0`).
+
+---
+
+## 📜 License
+
+Distributed under the terms of both the **MIT** and **Apache 2.0** licenses. See [LICENSE](file:///home/lauros/Workspace/projects/turbo-core/LICENSE) for details.
