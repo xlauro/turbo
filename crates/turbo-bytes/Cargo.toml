@@ -1,0 +1,24 @@
+[package]
+name = "turbo-bytes"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-performance byte buffers, cursor streams, and zero-copy binary reading/writing"
+
+[features]
+default = ["std"]
+std = ["turbo-core/std"]
+alloc = ["turbo-core/alloc"]
+
+[dependencies]
+turbo-core = { path = "../turbo-core", default-features = false }
+parking_lot = { version = "0.12" }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "bytes_bench"
+harness = false
