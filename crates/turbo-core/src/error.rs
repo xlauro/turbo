@@ -52,6 +52,10 @@ pub enum Error {
     /// A fallback variant for generic or custom errors.
     #[error("Custom error: {0}")]
     Custom(&'static str),
+
+    /// Emitted when string formatting fails.
+    #[error("Format error")]
+    Format,
 }
 
 #[cfg(feature = "std")]
@@ -61,6 +65,13 @@ impl From<Error> for std::io::Error {
             Error::Io(e) => e,
             other => std::io::Error::new(std::io::ErrorKind::Other, other),
         }
+    }
+}
+
+impl From<core::fmt::Error> for Error {
+    #[inline]
+    fn from(_: core::fmt::Error) -> Self {
+        Error::Format
     }
 }
 
@@ -104,6 +115,9 @@ mod tests {
 
         let err = Error::Custom("some custom error");
         assert_eq!(err.to_string(), "Custom error: some custom error");
+
+        let err = Error::Format;
+        assert_eq!(err.to_string(), "Format error");
     }
 
     #[cfg(feature = "std")]

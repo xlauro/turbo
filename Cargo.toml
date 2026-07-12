@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/turbo-core",
     "crates/turbo-bytes",
+    "crates/turbo-string",
 ]
 
 [workspace.package]

@@ -104,6 +104,7 @@ impl<A: TurboAlloc> TurboAlloc for TrackingAlloc<A> {
 ///
 /// This allocator is only available when the `std` or `alloc` features are active.
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[derive(Clone, Copy)]
 pub struct GlobalAlloc;
 
 #[cfg(any(feature = "std", feature = "alloc"))]

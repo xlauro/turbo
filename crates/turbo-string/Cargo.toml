@@ -1,0 +1,24 @@
+[package]
+name = "turbo-string"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-performance string buffers, zero-copy string views, and optimized text processing utilities"
+
+[features]
+default = ["std"]
+std = ["turbo-core/std", "turbo-bytes/std"]
+alloc = ["turbo-core/alloc", "turbo-bytes/alloc"]
+
+[dependencies]
+turbo-core = { path = "../turbo-core", default-features = false }
+turbo-bytes = { path = "../turbo-bytes", default-features = false }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "string_bench"
+harness = false
