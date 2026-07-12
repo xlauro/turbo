@@ -1,0 +1,24 @@
+[package]
+name = "turbo-pool"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-performance slab allocators and thread-safe object pools"
+
+[features]
+default = ["std"]
+std = ["turbo-core/std", "dep:parking_lot"]
+alloc = ["turbo-core/alloc"]
+
+[dependencies]
+turbo-core = { path = "../turbo-core", default-features = false }
+parking_lot = { version = "0.12.3", optional = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "pool_bench"
+harness = false

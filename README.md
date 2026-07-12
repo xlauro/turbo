@@ -129,6 +129,11 @@ All core components are benchmarked using [Criterion.rs](https://github.com/bhei
 * **Generational elements lookup**: `arena_lookup` takes **~1.07 µs** (vs `dense_map_lookup` taking **~1.28 µs** for 1000 items)
 * **Contiguous list iteration**: `dense_map_iter` takes **~54.7 ns** (vs sparse slot `arena_iter` taking **~548.3 ns** for 1000 elements — **10x speedup!** due to cache contiguity layout)
 
+### 6. Dynamic Slab & Thread-Safe Object Pools (`turbo-pool`)
+* **Slab Slot Allocation**: `slab_insert_remove` takes **~8.96 ns** (near-parity with standard heap `Box` allocation at **~8.47 ns**, while completely avoiding heap fragmentation and retaining slot indices!)
+* **Object checkout & recycling**: `object_pool_checkout` (checkout, write, auto-recycle) takes **~55.3 ns** (providing constant-time allocations for complex or large homogeneous structures)
+
+
 
 ---
 
